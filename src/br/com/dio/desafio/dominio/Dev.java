@@ -3,6 +3,7 @@ package br.com.dio.desafio.dominio;
 import java.util.*;
 
 public class Dev {
+
     private String nome;
     private Set<Conteudo> conteudosInscritos = new LinkedHashSet<>();
     private Set<Conteudo> conteudosConcluidos = new LinkedHashSet<>();
@@ -14,27 +15,20 @@ public class Dev {
 
     public void progredir() {
         Optional<Conteudo> conteudo = this.conteudosInscritos.stream().findFirst();
-        if(conteudo.isPresent()) {
-            this.conteudosConcluidos.add(conteudo.get());
-            this.conteudosInscritos.remove(conteudo.get());
-        } else {
-            System.err.println("Você não está matriculado em nenhum conteúdo!");
-        }
+        conteudo.ifPresentOrElse(
+                c -> {
+                    this.conteudosConcluidos.add(c);
+                    this.conteudosInscritos.remove(c);
+                },
+                () -> System.err.println("Você não está matriculado em nenhum conteúdo!")
+        );
     }
 
     public double calcularTotalXp() {
-        Iterator<Conteudo> iterator = this.conteudosConcluidos.iterator();
-        double soma = 0;
-        while(iterator.hasNext()){
-            double next = iterator.next().calcularXp();
-            soma += next;
-        }
-        return soma;
-
-        /*return this.conteudosConcluidos
+        return this.conteudosConcluidos
                 .stream()
                 .mapToDouble(Conteudo::calcularXp)
-                .sum();*/
+                .sum();
     }
 
 
@@ -47,7 +41,7 @@ public class Dev {
     }
 
     public Set<Conteudo> getConteudosInscritos() {
-        return conteudosInscritos;
+        return Collections.unmodifiableSet(conteudosInscritos);
     }
 
     public void setConteudosInscritos(Set<Conteudo> conteudosInscritos) {
@@ -55,7 +49,7 @@ public class Dev {
     }
 
     public Set<Conteudo> getConteudosConcluidos() {
-        return conteudosConcluidos;
+        return Collections.unmodifiableSet(conteudosConcluidos);
     }
 
     public void setConteudosConcluidos(Set<Conteudo> conteudosConcluidos) {

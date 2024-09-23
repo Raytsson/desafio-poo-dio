@@ -1,5 +1,7 @@
 package br.com.dio.desafio.dominio;
 
+import java.util.Optional;
+
 public class Curso extends Conteudo{
 
     private int cargaHoraria;
@@ -9,15 +11,14 @@ public class Curso extends Conteudo{
         return XP_PADRAO * cargaHoraria;
     }
 
-    public Curso() {
-    }
-
-
     public int getCargaHoraria() {
         return cargaHoraria;
     }
 
     public void setCargaHoraria(int cargaHoraria) {
+        Optional.of(cargaHoraria)
+                .filter(ch -> ch > 0)
+                .orElseThrow(() -> new IllegalArgumentException("Carga horária deve ser positiva."));
         this.cargaHoraria = cargaHoraria;
     }
 
